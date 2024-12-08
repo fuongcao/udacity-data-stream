@@ -46,7 +46,10 @@ sudo vi ~/.bashrc
 and add
 
 ```
-PATH="$PATH:~/kafka_2.13-3.0.0/bin"
+PATH="$PATH:~/kafka_2.12-3.9.0/bin"
+alias kafka-topics=kafka-topics.sh
+alias kafka-console-producer=kafka-console-producer.sh
+alias kafka-console-consumer=kafka-console-consumer.sh
 ```
 
 ###
@@ -54,11 +57,11 @@ PATH="$PATH:~/kafka_2.13-3.0.0/bin"
 **First, let's create a topic**
 
 ```
-kafka-topics.sh --create --topic kafka-arch --partitions 1 --replication-factor 1 --bootstrap-server localhost:9092
+kafka-topics --create --topic kafka-arch --partitions 1 --replication-factor 1 --bootstrap-server localhost:9092
 ```
 
 ```
-kafka-topics.sh --bootstrap-server localhost:9092 --list
+kafka-topics --bootstrap-server localhost:9092 --list
 ```
 
 Note: Kafka v2.2+ : --bootstrap-server replaced for --zookeeper
@@ -66,15 +69,15 @@ Note: Kafka v2.2+ : --bootstrap-server replaced for --zookeeper
 **We have the "kafka-arch" topic, let's produce some data into it**
 
 ```
-kafka-console-producer.sh --topic "kafka-arch" --broker-list localhost:9092
+kafka-console-producer --topic "kafka-arch" --broker-list localhost:9092
 ```
 
 **let's consume the data from the "kafka-arch" topic**
 
 ```
-kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic first_topic
+kafka-console-consumer --bootstrap-server localhost:9092 --topic first_topic
 ```
 
 ```
-kafka-console-consumer.sh --bootstrap-server PLAINTEXT://localhost:9092 --topic "kafka-arch" --from-beginning
+kafka-console-consumer --bootstrap-server PLAINTEXT://localhost:9092 --topic "kafka-arch" --from-beginning
 ```
