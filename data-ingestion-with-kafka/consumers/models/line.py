@@ -59,7 +59,7 @@ class Line:
         # TODO: Based on the message topic, call the appropriate handler.
         topic = message.topic()
 
-        if "stations.transformed" in topic: # Set the conditional correctly to the stations Faust Table
+        if "stations.table" in topic: # Set the conditional correctly to the stations Faust Table
             try:
                 value = json.loads(message.value())
                 self._handle_station(value)
@@ -67,7 +67,7 @@ class Line:
                 logger.fatal("bad station? %s, %s", value, e)
         elif "station.arrivals" in topic: # Set the conditional to the arrival topic
             self._handle_arrival(message)
-        elif True: # Set the conditional to the KSQL Turnstile Summary Topic
+        elif topic == "TURNSTILE_SUMMARY": # Set the conditional to the KSQL Turnstile Summary Topic
             json_data = json.loads(message.value())
             station_id = json_data.get("STATION_ID")
             station = self.stations.get(station_id)
