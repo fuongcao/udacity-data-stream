@@ -25,38 +25,46 @@ def configure_connector():
     # using incrementing mode, with `stop_id` as the incrementing column name.
     # Make sure to think about what an appropriate topic prefix would be, and how frequently Kafka
     # Connect should run this connector (hint: not very often!)
-    logger.info("connector code not completed skipping connector creation")
+    logger.info("connector code completed connector creation")
     resp = requests.post(
-       KAFKA_CONNECT_URL,
-       headers={"Content-Type": "application/json"},
-       data=json.dumps({
-           "name": CONNECTOR_NAME,
-           "config": {
-               "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
-               "key.converter": "org.apache.kafka.connect.json.JsonConverter",
-               "key.converter.schemas.enable": "false",
-               "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-               "value.converter.schemas.enable": "false",
-               "batch.max.rows": "500",
-               "connection.url": "jdbc:postgresql://postgres:5432/cta",
-               "connection.user": "cta_admin",
-               "connection.password": "chicago",
-               "table.whitelist": "stations",
-               "mode": "incrementing",
-               "incrementing.column.name": "stop_id",
-               "topic.prefix": "connection",
-               "poll.interval.ms": "1000",
-           }
-       }),
+        KAFKA_CONNECT_URL,
+        headers={"Content-Type": "application/json"},
+        data=json.dumps({
+            "name": CONNECTOR_NAME,
+            "config": {
+                "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+                "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+                "key.converter.schemas.enable": "false",
+                "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+                "value.converter.schemas.enable": "false",
+                "batch.max.rows": "500",
+                # TODO
+                "connection.url": "jdbc:postgresql://postgres:5433/cta",
+                # TODO
+                "connection.user": "cta_admin",
+                # TODO
+                "connection.password": "chicago",
+                # TODO
+                "table.whitelist": "stations",
+                # TODO
+                "mode": "incrementing",
+                # TODO
+                "incrementing.column.name": "stop_id",
+                "topic.prefix": "org.chicago.cta.connectors.",
+                # TODO
+                "poll.interval.ms": "5000"
+            }
+        }),
     )
 
-    ## Ensure a healthy response was given
+    # Ensure a healthy response was given
     try:
         resp.raise_for_status()
         logging.debug("connector created successfully")
     except:
         print(f"failed creating connector: {json.dumps(resp.json(), indent=2)}")
         exit(1)
+
 
 if __name__ == "__main__":
     configure_connector()
