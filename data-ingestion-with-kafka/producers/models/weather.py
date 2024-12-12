@@ -33,7 +33,7 @@ class Weather(Producer):
         # TODO: Complete the below by deciding on a topic name, number of partitions, and number of
         # replicas
         super().__init__(
-            "com.udacity.weather", # TODO: Come up with a better topic name
+            "org.chicago.cta.weather", # TODO: Come up with a better topic name
             key_schema=Weather.key_schema,
             value_schema=Weather.value_schema,
             num_partitions=1,
