@@ -202,3 +202,49 @@ Once the simulation is running, you may hit `Ctrl+C` at any time to exit.
 3. `. venv/bin/activate`
 4. `pip install -r requirements.txt`
 5. `python server.py`
+
+# PROJECT RUBRIC
+### Kafka Producer
+1. Kafka topics are created with appropriate settings
+![kafka-cli-topics-list.png](images/kafka-cli-topics-list.png)
+2. Kafka messages are produced successfully
+![kafka-comsumer-topic-arrival.png](images/kafka-comsumer-topic-arrival.png)
+3. All messages have an associated value schema
+![schema-regisrty-arrivals.png](images/schema-regisrty-arrivals.png)
+![schema-regisrty-turnsitiles.png](images/schema-regisrty-turnsitiles.png)
+
+----
+### Kafka Consumer
+1. Messages are consumed from Kafka
+![web-server.png](images/web-server.png)
+2. Stations data is consumed from the beginning of the topic
+![web-server-colors.png](images/web-server-colors.png)
+
+----
+### Kafka REST Proxy
+1. Kafka REST Proxy successfully delivers messages to the Kafka Topic
+![kafka-proxy-weather.png](images/kafka-proxy-weather.png)
+2. Messages produced to the Kafka REST Proxy include a value schema
+![kafka-proxy-schema.png](images/kafka-proxy-schema.png)
+
+----
+### Kafka Connect
+1. Kafka Connect successfully loads Station data from Postgres to Kafka
+![kafka-connector-1.png](images/kafka-connector-1.png)
+2. Kafka Connect is configured to define a Schema
+3. Kafka Connect is configured to load on an incrementing ID
+![kafka-connect-rest-api.png](images/kafka-connect-rest-api.png)
+
+### Faust Streams
+1. The Faust application ingests data from the stations topic
+![faust-consumer-group.png](images/faust-consumer-group.png)
+2. Data is translated correctly from the Kafka Connect format to the Faust table format
+3. Transformed Station Data is Present for each Station ID in the Kafka Topic
+![faust-table.png](images/faust-table.png)
+
+----
+###  KSQL
+1. Turnstile topic is translated into a KSQL Table
+![ksql-turnstiles-data.png](images/ksql-turnstiles-data.png)
+2. Turnstile table is aggregated into a summary table
+![ksql-turnstile-summary-data.png](images/ksql-turnstile-summary-data.png)

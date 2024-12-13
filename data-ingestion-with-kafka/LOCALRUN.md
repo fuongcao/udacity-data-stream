@@ -76,9 +76,9 @@ kafka-console-producer --topic "kafka-arch" --broker-list localhost:9092
 **let's consume the data from the "kafka-arch" topic**
 
 ```
-kafka-console-consumer --bootstrap-server localhost:9092 --topic first_topic
+kafka-console-consumer --bootstrap-server localhost:9092 --topic org.chicago.cta.station.arrivals.35th_bronzeville_iit --from-beginning
 ```
 
 ```
-kafka-console-consumer --bootstrap-server PLAINTEXT://localhost:9092 --topic "kafka-arch" --from-beginning
+kafka-console-consumer --bootstrap-server localhost:9092 --topic org.chicago.cta.station.turnstiles --from-beginning
 ```
