@@ -3,7 +3,7 @@
   "type": "record",
   "name": "arival.value",
   "fields": [
-    { "name": "station_id", "type": "long" },
+    { "name": "station_id", "type": "int" },
     { "name": "train_id", "type": "string" },
     { "name": "direction", "type": "string" },
     { "name": "line", "type": "string" },

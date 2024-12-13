@@ -67,6 +67,7 @@ def run_server():
             weather_model.process_message,
             offset_earliest=True,
         ),
+        # stations Faust Table
         KafkaConsumer(
             "org.chicago.cta.stations.table.v1",
             lines.process_message,

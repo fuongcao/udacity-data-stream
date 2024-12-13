@@ -5,13 +5,16 @@
 ```
 docker compose up -d
 ```
+### check again ...
+```
+docker-compose ps
+```
 
 ### If you wish to stop and get back to it later, run:
 
 ```
-docker compose down
+docker compose down -v
 ```
-
 ### Removing
 
 Run the following comand to terminate and to remove all volumes and images used:
