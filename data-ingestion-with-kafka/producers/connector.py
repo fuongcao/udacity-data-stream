@@ -38,7 +38,8 @@ def configure_connector():
                 "value.converter": "org.apache.kafka.connect.json.JsonConverter",
                 "value.converter.schemas.enable": "false",
                 "batch.max.rows": "500",
-                # TODO
+                # TODO. docker container name used to connnect from kafka-connector container 
+                # so that the connection.url should be "jdbc:postgresql://postgres:5433/cta" instead of "jdbc:postgresql://localhost:5433/cta"
                 "connection.url": "jdbc:postgresql://postgres:5433/cta",
                 # TODO
                 "connection.user": "cta_admin",

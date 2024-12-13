@@ -1,20 +1,35 @@
 # Public Transit Status with Apache Kafka
 
-In this project, we will construct a streaming event pipeline around Apache Kafka and its ecosystem. Using public data from the [Chicago Transit Authority](https://www.transitchicago.com/data/) we will construct an event pipeline around Kafka that allows us to simulate and display the status of train lines in real time.
+In this project, you will construct a streaming event pipeline around Apache Kafka and its ecosystem. Using public data from the [Chicago Transit Authority](https://www.transitchicago.com/data/) we will construct an event pipeline around Kafka that allows us to simulate and display the status of train lines in real time.
+
+When the project is complete, you will be able to monitor a website to watch trains move from station to station.
+
+![Final User Interface](images/ui.png)
+
+
+## Prerequisites
+
+The following are required to complete this project:
+
+* Docker
+* Python 3.7
+* Access to a computer with a minimum of 16gb+ RAM and a 4-core CPU to execute the simulation
 
 ## Description
 
 The Chicago Transit Authority (CTA) has asked us to develop a dashboard displaying system status for its commuters. We have decided to use Kafka and ecosystem tools like REST Proxy and Kafka Connect to accomplish this task.
 
 Our architecture will look like so:
+
 ![Project Architecture](images/diagram.png)
 
-## 1. Create Kafka Producer
+### Step 1: Create Kafka Producers
 The first step in our plan is to configure the train stations to emit some of the events that we need. The CTA has placed a sensor on each side of every train station that can be programmed to take an action whenever a train arrives at the station.
 
-1. Complete the code in [producers/models/producer.py](producers/models/producer.py)
+To accomplish this, you must complete the following tasks:
 
-2. Define a `value` schema for the arrival event in [producers/models/schemas/arrival_value.json](producers/models/schemas/arrival_value.json)
+1. Complete the code in `producers/models/producer.py`
+1. Define a `value` schema for the arrival event in `producers/models/schemas/arrival_value.json` with the following attributes
 	* `station_id`
 	* `train_id`
 	* `direction`
@@ -22,71 +37,93 @@ The first step in our plan is to configure the train stations to emit some of th
 	* `train_status`
 	* `prev_station_id`
 	* `prev_direction`
-3. Complete the code in [producers/models/station.py](producers/models/station.py)
+1. Complete the code in `producers/models/station.py` so that:
 	* A topic is created for each station in Kafka to track the arrival events
 	* The station emits an `arrival` event to Kafka whenever the `Station.run()` function is called.
 	* Ensure that events emitted to kafka are paired with the Avro `key` and `value` schemas
-4. Define a `value` schema for the turnstile event in [producers/models/schemas/turnstile_value.json](producers/models/schemas/turnstile_value.json) with the following attributes
+1. Define a `value` schema for the turnstile event in `producers/models/schemas/turnstile_value.json` with the following attributes
 	* `station_id`
 	* `station_name`
 	* `line`
-5. Complete the code in [producers/models/turnstile.py](producers/models/turnstile.py)
+1. Complete the code in `producers/models/turnstile.py` so that:
 	* A topic is created for each turnstile for each station in Kafka to track the turnstile events
 	* The station emits a `turnstile` event to Kafka whenever the `Turnstile.run()` function is called.
 	* Ensure that events emitted to kafka are paired with the Avro `key` and `value` schemas
 
-----
-### 2. Configure Kafka REST Proxy Producer
-The CTA have asked that we also send weather readings into Kafka from their weather hardware. Unfortunately, this hardware is old and we cannot use the Python Client Library due to hardware restrictions. Instead, we are going to use HTTP REST to send the data to Kafka from the hardware using Kafka's REST Proxy.
+### Step 2: Configure Kafka REST Proxy Producer
+Our partners at the CTA have asked that we also send weather readings into Kafka from their weather hardware. Unfortunately, this hardware is old and we cannot use the Python Client Library due to hardware restrictions. Instead, we are going to use HTTP REST to send the data to Kafka from the hardware using Kafka's REST Proxy.
 
-1. Define a `value` schema for the weather event in [producers/models/schemas/weather_value.json](producers/models/schemas/weather_value.json) with the following attributes
+To accomplish this, you must complete the following tasks:
+
+1. Define a `value` schema for the weather event in `producers/models/schemas/weather_value.json` with the following attributes
 	* `temperature`
 	* `status`
-2. Complete the code in [producers/models/weather.py](producers/models/weather.py) so that:
+1. Complete the code in `producers/models/weather.py` so that:
 	* A topic is created for weather events
 	* The weather model emits `weather` event to Kafka REST Proxy whenever the `Weather.run()` function is called.
+		* **NOTE**: When sending HTTP requests to Kafka REST Proxy, be careful to include the correct `Content-Type`. Pay close attention to the [examples in the documentation](https://docs.confluent.io/current/kafka-rest/api.html#post--topics-(string-topic_name)) for more information.
 	* Ensure that events emitted to REST Proxy are paired with the Avro `key` and `value` schemas
-----
-### 3. Configure Kafka Connect
+
+### Step 3: Configure Kafka Connect
 Finally, we need to extract station information from our PostgreSQL database into Kafka. We've decided to use the [Kafka JDBC Source Connector](https://docs.confluent.io/current/connect/kafka-connect-jdbc/source-connector/index.html).
-1. Complete the code and configuration in [producers/connector.py](producers/connector.py)
-	* `Use docker container name to connnect from kafka-connector container so that the connection.url should be should be "jdbc:postgresql://postgres:5433/cta" instead of "jdbc:postgresql://localhost:5433/cta"`
+
+To accomplish this, you must complete the following tasks:
+
+1. Complete the code and configuration in `producers/connectors.py`
+	* Please refer to the [Kafka Connect JDBC Source Connector Configuration Options](https://docs.confluent.io/current/connect/kafka-connect-jdbc/source-connector/source_config_options.html) for documentation on the options you must complete.
 	* You can run this file directly to test your connector, rather than running the entire simulation.
 	* Make sure to use the [Landoop Kafka Connect UI](http://localhost:8084) and [Landoop Kafka Topics UI](http://localhost:8085) to check the status and output of the Connector.
 	* To delete a misconfigured connector: `CURL -X DELETE localhost:8083/connectors/stations`
 
-----
-### 4. Configure the Faust Stream Processor
+### Step 4: Configure the Faust Stream Processor
 We will leverage Faust Stream Processing to transform the raw Stations table that we ingested from Kafka Connect. The raw format from the database has more data than we need, and the line color information is not conveniently configured. To remediate this, we're going to ingest data from our Kafka Connect topic, and transform the data.
 
-1. Complete the code and configuration in [consumers/faust_stream.py](consumers/faust_stream.py)
+To accomplish this, you must complete the following tasks:
 
-2. We must run this Faust processing application with the following command:
-```
-faust -A faust_stream worker -l info
-```
+1. Complete the code and configuration in `consumers/faust_stream.py
 
-----
-### 5. Configure the KSQL Table
+#### Watch Out!
+
+You must run this Faust processing application with the following command:
+
+`faust -A faust_stream worker -l info`
+
+### Step 5: Configure the KSQL Table
 Next, we will use KSQL to aggregate turnstile data for each of our stations. Recall that when we produced turnstile data, we simply emitted an event, not a count. What would make this data more useful would be to summarize it by station so that downstream applications always have an up-to-date count
 
-1. Complete the queries in [consumers/ksql.py](consumers/ksql.py)
-	* `ksql` could be use in container `EXEC`. 
-	* Made a mistake in table creation? `DROP TABLE <your_table>`. If the CLI asks you to terminate a running query, you can `TERMINATE <query_name>`
+To accomplish this, you must complete the following tasks:
 
-----
-### 6. Create Kafka Consumers
-With all of the data in Kafka, the final task is to consume the data in the web server that is going to serve the transit status pages to our commuters.
+1. Complete the queries in `consumers/ksql.py`
 
-1. Complete the code in [consumers/consumer.py](consumers/consumer.py)
-2. Complete the code in [consumers/models/line.py](consumers/models/line.py)
-3. Complete the code in [consumers/models/weather.py](consumers/models/weather.py)
-4. Complete the code in [consumers/models/station.py](consumers/models/station.py)
+#### Tips
 
+* The KSQL CLI is the best place to build your queries. Try `ksql` in your workspace to enter the CLI.
+* You can run this file on its own simply by running `python ksql.py`
+* Made a mistake in table creation? `DROP TABLE <your_table>`. If the CLI asks you to terminate a running query, you can `TERMINATE <query_name>`
+
+
+### Step 6: Create Kafka Consumers
+With all of the data in Kafka, our final task is to consume the data in the web server that is going to serve the transit status pages to our commuters.
+
+To accomplish this, you must complete the following tasks:
+
+1. Complete the code in `consumers/consumer.py`
+1. Complete the code in `consumers/models/line.py`
+1. Complete the code in `consumers/models/weather.py`
+1. Complete the code in `consumers/models/station.py`
+
+### Documentation
+In addition to the course content you have already reviewed, you may find the following examples and documentation helpful in completing this assignment:
+
+* [Confluent Python Client Documentation](https://docs.confluent.io/current/clients/confluent-kafka-python/#)
+* [Confluent Python Client Usage and Examples](https://github.com/confluentinc/confluent-kafka-python#usage)
+* [REST Proxy API Reference](https://docs.confluent.io/current/kafka-rest/api.html#post--topics-(string-topic_name))
+* [Kafka Connect JDBC Source Connector Configuration Options](https://docs.confluent.io/current/connect/kafka-connect-jdbc/source-connector/source_config_options.html)
 
 ## Directory Layout
 The project consists of two main directories, `producers` and `consumers`.
-The following directory layout indicates the files that for modifying by adding a `*` indicator.
+
+The following directory layout indicates the files that the student is responsible for modifying by adding a `*` indicator. Instructions for what is required are present as comments in each file.
 
 ```
 * - Indicates that the student must complete the code in this file
@@ -127,22 +164,12 @@ The following directory layout indicates the files that for modifying by adding 
 ```
 
 ## Running and Testing
-This project could be completed in locally or udacity workspace. This submission I have completed by locallly with following are required to complete this project:
-* WLS2 - Ubuntu 18.0.4
-* Docker
-* Python 3.7
 
-To run the simulation, we must first start up the Kafka ecosystem on their machine utilizing Docker Compose.
+To run the simulation, you must first start up the Kafka ecosystem on their machine utilizing Docker Compose.
 
-```
-docker-compose up -d
-```
+```%> docker-compose up```
 
-To completely retart environment
-
-```
-docker-compose down -v
-```
+Docker compose will take a 3-5 minutes to start, depending on your hardware. Please be patient and wait for the docker-compose logs to slow down or stop before beginning the simulation.
 
 Once docker-compose is ready, the following services will be available:
 
@@ -202,3 +229,5 @@ Once the simulation is running, you may hit `Ctrl+C` at any time to exit.
 3. `. venv/bin/activate`
 4. `pip install -r requirements.txt`
 5. `python server.py`
+
+Once the server is running, you may hit `Ctrl+C` at any time to exit.
