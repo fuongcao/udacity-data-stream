@@ -70,7 +70,7 @@ async def transform_stations(stations):
             line = linecolor
         )
 
-        await out_topic.send(key=station.station_name, value=transformed_station)
+        table[station.station_id] = transformed_station
 
 
 if __name__ == "__main__":
