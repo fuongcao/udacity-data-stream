@@ -190,11 +190,12 @@ stediScoreStreamingDF = customerRiskStreamingDF.join(emailAndBirthYearStreamingD
 # +--------------------+-----+--------------------+---------+
 #
 # In this JSON Format {"customer":"Santosh.Fibonnaci@test.com","score":"28.5","email":"Santosh.Fibonnaci@test.com","birthYear":"1963"}
-stediScoreStreamingDF.selectExpr("cast(customer as string) as key", "to_json(struct(*)) as value")\
-                    .writeStream \
-                    .format("kafka")\
-                    .option("kafka.bootstrap.servers", BOOTSTRAP_SERVER)\
-                    .option("topic", "customer-risk")\
-                    .option("checkpointLocation", "/tmp/kafkacheckpoint")\
-                    .start()\
-                    .awaitTermination()
+stediScoreStreamingDF.writeStream.outputMode("append").format("console").start().awaitTermination()
+# stediScoreStreamingDF.selectExpr("cast(customer as string) as key", "to_json(struct(*)) as value")\
+#                     .writeStream \
+#                     .format("kafka")\
+#                     .option("kafka.bootstrap.servers", BOOTSTRAP_SERVER)\
+#                     .option("topic", "customer-risk")\
+#                     .option("checkpointLocation", "/tmp/kafkacheckpoint")\
+#                     .start()\
+#                     .awaitTermination()
