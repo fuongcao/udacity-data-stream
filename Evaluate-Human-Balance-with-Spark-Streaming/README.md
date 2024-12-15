@@ -25,16 +25,23 @@ You work for the data science team at STEDI, a small startup focused on assessin
     } 
     ```
 * Once the data is populated in the configured kafka topic, the graph should have real-time data points
-
-![risk-graph-1.png](images/risk-graph-1.png)
-![risk-graph-2.png](images/risk-graph-2.png)
-
 ----
 # PROJECT RUBRIC
 
 ## Initialize Spark Components
 1. Start a Spark cluster. The log contains a statement “Successfully registered with master spark”
-- [spark-master.log](spark/logs/spark-master.log)
-- [spark-worker.log](spark/logs/spark-worker.log)
+- [spark/logs/spark-master.log](spark/logs/spark-master.log)
+- [spark/logs/spark-worker.log](spark/logs/spark-worker.log)
 
-2. The Spark application successfully executes on the Spark cluster
+2. The Spark application successfully executes on the Spark cluster.
+- [spark/logs/kafkajoin.log](spark/logs/kafkajoin.log)
+
+
+## Continuous Application
+1. The data pipeline provides continuous output of customer risk scores
+![risk-graph-1.png](images/risk-graph-1.png)
+![risk-graph-2.png](images/risk-graph-2.png)
+2. The spark streaming application doesn’t exit prematurely  
+- [sparkpykafkajoin.py](sparkpykafkajoin.py)
+![customer-risk.png](images/customer-risk.png)
+
