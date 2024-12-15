@@ -34,7 +34,7 @@ You work for the data science team at STEDI, a small startup focused on assessin
 - [spark/logs/spark-worker.log](spark/logs/spark-worker.log)
 
 2. The Spark application successfully executes on the Spark cluster.
-- [spark/logs/kafkajoin.log](spark/logs/kafkajoin.log)
+- [spark/logs/kafkajoinconsole.log](spark/logs/kafkajoinconsole.log)
 
 
 ## Continuous Application
@@ -45,3 +45,30 @@ You work for the data science team at STEDI, a small startup focused on assessin
 - [sparkpykafkajoin.py](sparkpykafkajoin.py)
 ![customer-risk.png](images/customer-risk.png)
 
+## Consume and Process Data
+1. The spark streaming application consumes data from the redis-server Kafka topic
+2. The spark streaming application consumes data from the stedi-events Kafka topic
+3. The spark streaming application parses JSON and Base64 decodes (where applicable) the data received from Kafka
+- [sparkpykafkajoin.py](sparkpykafkajoin.py)
+
+##  Aggregation of Streaming Dataframes
+1. The Spark streaming application instantiates two distinct streaming dataframes
+2. The Spark streaming application joins the two streaming dataframes emailAndBirthYear and emailAndRiskScore to create riskScoreByBirthYear
+- [sparkpykafkajoin.py](sparkpykafkajoin.py)
+
+## Sink Datastream
+1. The spark streaming application produces a sink to Kafka  
+![docker-compose.png](images/docker-compose.png)
+2. The streaming dataframe being sinked with Kafka contains JSON formatted data  
+![custumer-risk-logs.png](images/custumer-risk-logs.png)
+
+## Validation
+1. Outputs a log which contains customer risk information in a console output format  
+- [sparkpyeventskafkastreamtoconsole.py](sparkpyeventskafkastreamtoconsole.py)  
+- [spark/logs/eventstream.log](spark/logs/eventstream.log)  
+![sparkpyeventskafkastreamtoconsole.png](images/sparkpyeventskafkastreamtoconsole.png)  
+
+2. Outputs a log which contains customer birth year information in a console output format  
+- [sparkpyrediskafkastreamtoconsole.py](sparkpyrediskafkastreamtoconsole.py)  
+- [spark/logs/redis-kafka.log](spark/logs/redis-kafka.log)  
+![sparkpyrediskafkastreamtoconsole.png](images/sparkpyrediskafkastreamtoconsole.png)  
